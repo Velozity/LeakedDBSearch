@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<!doctype html>
+<html lang="en">
+
+<head>
+  <%- include('./partial/head'); -%>
+</head>
+
+<body>
+
+  <header>
+    <nav style="background-color: #212121;">
+      <div id="main-nav" class="nav-wrapper" style="background-color: transparent; z-index: 999; border-bottom: 0;">
+        <a href="/" class="brand-logo noselect"><img src="/img/logo.png"></a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down lato noselect">
+          <li><a href="/"><i class="fas fa-home" style="font-size: 13px;"></i> Home</a></li>
+          <% if(user) { %>
+            <li><a href="/search"><i class="fas fa-search" style="font-size: 13px;"></i> Search</a></li>
+            <li><a href="/account"><i class="far fa-address-card" style="font-size: 13px;"></i> Account</a></li>
+            <li><a href="/logout" style="margin-right: 20px;"><i class="fas fa-sign-out-alt" style="font-size: 13px;"></i> Logout</a></li>
+          <% } else { %>
+            <li style="margin-right: 20px;"><a href="/login"><i class="fas fa-sign-in-alt" style="font-size: 13px;"></i> Login</a></li>
+          <% } %>
+        </ul>
+        <ul class="right hide-on-large-only">
+          <li><a id="menuDropMobile" class="dropdown-trigger" href="#!" data-target="menuDropdown"><i class="material-icons">menu</i></a></li>
+        </ul>
+        <ul id='menuDropdown' class='dropdown-content' style="width: 100%;">
+          <li><a href="/">Home</a></li>
+          <% if(user) { %>
+            <li><a href="/search">Search</a></li>
+            <li><a href="/account">Account</a></li>
+            <li><a href="/logout" style="color: rgb(206, 75, 75);">Logout</a></li>
+          <% } else { %>
+            <li><a href="/login">Login</a></li>
+          <% } %>
+        </ul>
+      </div>
+  </nav>
+  </header>
+  <div id="bgHeader">
+    <div class="container fadeIn" style="margin-top: 5vh;">
+        <div class="row">
+            <div id="mainText" class="col l12">
+              <h1>SEARCH THE PLANET</h1>
+              <h2><strong style="font-weight: bold;">MILLIONS</strong> OF RECORDS AT A TIME.</h2><br>
+              <p>We have compiled thousands of databases to help you protect your accounts.<br>
+              <strong style="font-weight: bolder;">Membership only $4.99/month</strong></p>
+            </div>
+        </div>
+        <div class="row">
+          <div id="actions" class="col l12">
+            <a href="/register"><button class="btn-makeanaccount">GET STARTED</button></a>
+            <a href="/login"><button class="btn-viewstats">MORE INFO</button></a>
+          </div>
+        </div>
+
+    <div class="row center" style="margin-top: 140px; margin-bottom: 5px;">
+        <span style="font-size: 22px; font-weight: bold; color: rgb(211, 211, 211);">+<div class="counter" data-count="<%= database_size %>" style="display: inline;">0</div> RECORDS AT YOUR DISPOSAL</span>
+    </div>
+    <div class="row" style="margin-top: 30px;">
+      <div class="col l7 m12 s12 hide-on-large-only">
+        <img src="/img/sample.jpg" style="width: 45vh; margin-top: 65px;">
+      </div>
+      <div class="col l7 m12 s12 show-on-large hide-on-med-and-down">
+        <img src="/img/sample.jpg" style="width: 70vh; margin-top: 65px;">
+      </div>
+      <div class="col l3 m12 s12" style="margin-top: 50px;">
+        <p style="font-weight: bold;">What you receive with your membership:</p>
+        <p>• 30 Days Full-Access Querying <br>
+           • Extra Analysis Tools<br>
+           • Active Real-time Support
+        </p>
+      </div>
+    </div>
+  </div>
+  </div>
+  <footer>
+    <%- include('./partial/footer'); -%>
+  </footer>
+</body>
+
+</html>

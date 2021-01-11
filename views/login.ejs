@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<!doctype html>
+<html lang="en">
+
+<head>
+  <%- include('./partial/head'); -%>
+</head>
+
+<body>
+
+  <header>
+    <%- include('./partial/header'); -%>
+  </header>
+
+  <div class="container center fadeIn" style="margin-top: 10vh;">
+    <h1>Login</h1>
+
+    <form id="registerForm" action="/login" method="post" class="center" style="margin-top: 5px;" enctype="application/x-www-form-urlencoded">
+      <a id="resendEmail" style="margin-top: 20px; font-weight: bold;" hidden>Resend Email Verification</a>
+      <div class="row" style="margin-bottom: 0px;"> 
+          <div class="input-field col l4 m12 s12 offset-l4"> 
+            <input type="text" name="username" required>
+            <label for="username">Username or email</label>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="input-field col l4 m12 s12 offset-l4 center"> 
+            <input type="password" name="password" required>
+            <label for="password">Password</label>
+          </div></div>
+
+      <button type="submit" class="btn-accept"><i class="fas fa-sign-in-alt"></i> Login</button>
+      <div style="margin-top: 10px;">
+        <span style="color: rgb(155, 155, 155); font-size: 13px;">or </span><a class="createAccountText" href="/register" style="margin-top: 10px;">create an account</a>
+      </div>
+      <div style="margin-top: 3px;">
+        <a href="/forgot" class="createAccountText"><span style=" font-size: 13px;">Forgot password? </span></a>
+      </div>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    </form>  
+  </div>
+  <footer>
+    <%- include('./partial/footer'); -%>
+  </footer>
+  <script>
+    <% if(loginStatus.length > 0) {%>
+        <% if(loginStatus[0].resend) { %>
+          $('#resendEmail').attr('hidden', false);
+          $('#resendEmail').attr('href', '/auth/resend?email=<%= loginStatus[0].email %>')
+          M.toast({html: '<%=loginStatus[0].message %>'});
+        <% } else { %>
+        M.toast({html: '<%=loginStatus[0] %>'});
+        <% } %>
+    <% } %>
+  </script>
+</body>
+
+</html>

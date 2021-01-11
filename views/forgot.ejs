@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<!doctype html>
+<html lang="en">
+
+<head>
+  <%- include('./partial/head'); -%>
+</head>
+
+<body>
+
+  <header>
+    <%- include('./partial/header'); -%>
+  </header>
+
+  <div class="container center fadeIn" style="margin-top: 10vh;">
+    <h1>Reset your password</h1>
+
+    <% if(token !== null) { %>
+      <form id="resetForm" action="/auth/changePass" method="post" class="center" style="margin-top: 5px;" enctype="application/x-www-form-urlencoded">
+        <div class="row" style="margin-bottom: 0px;"> 
+            <div class="input-field col l4 m12 s12 offset-l4"> 
+              <input type="password" name="password" required>
+              <label for="password">New Password</label>
+            </div>
+          </div>
+        <button type="submit" class="btn-accept">Change Password</button>
+        <input type="hidden" name="token" value="<%= token %>">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      </form>  
+    <% } else { %>
+    <form id="resetForm" action="/forgot" method="post" class="center" style="margin-top: 5px;" enctype="application/x-www-form-urlencoded">
+      <div class="row" style="margin-bottom: 0px;"> 
+          <div class="input-field col l4 m12 s12 offset-l4"> 
+            <input type="text" name="email" required>
+            <label for="email">Email</label>
+          </div>
+        </div>
+      <button type="submit" class="btn-accept">Reset</button>
+      <div style="margin-top: 10px;">
+        <a class="createAccountText" href="/login" style="margin-top: 10px;">Go back to login</a>
+      </div>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    </form>  
+    <% } %>
+  </div>
+  <footer>
+    <%- include('./partial/footer'); -%>
+  </footer>
+  <script>
+    <% if(flashMsg.length > 0) {%>
+        M.toast({html: '<%=flashMsg[0]%>'});
+    <% } %>
+  </script>
+</body>
+
+</html>

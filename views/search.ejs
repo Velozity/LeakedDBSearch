@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <%- include('./partial/head'); -%>
+</head>
+
+<body>
+
+  <header>
+    <%- include('./partial/header'); -%>
+  </header>
+
+  <div class="container fadeIn">
+    <div class="center" style="margin-bottom: 10px;">
+      <h1 id="searchText">Search <%= database_size %> entries</h1>
+      <span style="font-size: 12px; color: #ececec;"><%- !user.isMember ? 'You don\'t have membership, <a href="/account">purchase here.</a>' : 'You have full access membership!'%></span>
+    </div>
+    <div class="row" style="margin-bottom: 0px;">
+      <div class="input-field col l6 m12 s12 offset-l2">
+        <input id="searchQuery" type="text" autocomplete="off">
+        <label for="searchQuery">Username, Email or IP</label>
+        <br>
+        <span id="howto" data-position="bottom" data-tooltip="Enter in a username, email or IP address to search in our database of records. (Case Insensitive)" class="tooltipped" style="cursor: pointer; color: rgb(110, 110, 110); font-size: 11px; text-align: end;">How does this work? <span style="font-size: 10px;">(?)</span></span>
+      </div>
+      <div class="col l3 m3 s12 offset-s3 offset-m4">
+      <img id="loading" src="/img/loading.svg" style="width: 32px; margin-left: 60px; margin-top: 30px;" hidden>
+      <button id="search" class="btn-search noselect" style="margin-top: 27px;"><i class="fas fa-search"></i> Search</button>
+    </div>
+    </div>
+
+    <div id="resultsTableSection">
+
+    </div>
+  </div>
+
+  <footer>
+    <%- include('./partial/footer'); -%>
+  </footer>
+  <script>
+    $(document).ready(() => {
+      $("#search").click(() => {
+        const search = $('#searchQuery').val();
+        if(search === '')
+          return;
+
+        $('#loading').attr('hidden', false)
+        $('#searchQuery').attr('disabled', true);
+        $('#search').attr('hidden', true);
+
+        $.ajax({
+          method: 'post',
+          url: '/search',
+          data: {
+            search,
+            _csrf: "<%= csrfToken %>"
+          },
+          success: (data) => {
+          $('#searchQuery').attr('disabled', false);
+          $('#search').attr('hidden', false);
+          $('#loading').attr('hidden', true)
+          if(data.error) {
+              M.toast({html: data.error });
+              return;
+          }
+
+          if(data.rate_limit) {
+            M.toast({html: 'Rate limit exceeded, please wait 5 minutes.' });
+            return;
+          }
+
+          if(data.results.length === 0) {
+            $('#resultsTableSection').html(`<br><h5 style="color: rgb(211, 211, 211);">No results were found.</h5>
+            <span style="font-size: 13px; color: #999999;">Executed in ${data.execution_time} seconds</span>`);
+            return;
+          }
+
+            let tBody = '';
+            data.results.forEach((result) => { 
+              tBody += `<tr>
+                <td>${result.service === null || result.service === '' ? '<span style="color: #808080;">Unknown</span>' : result.service}</td>
+                <td>${result.user === null || result.user === '' ? '<span style="color: #808080;">Unknown</span>' : result.user}</td>
+                <td>${result.email === null || result.email === '' ? '<span style="color: #808080;">Unknown</span>' : result.email}</td>
+                <td>${result.pass === null || result.pass === '' ? '<span style="color: #808080;">Unknown</span>' : `<span class="hint">${result.pass}</span>`}</td>
+                <td>${result.ip === null || result.ip === '' ? '<span style="color: #808080;">Unknown</span>' : result.ip}</td>
+                </tr>`;
+            });
+        
+            const resultTable = `
+            <table id="searchTable" class="highlight responsive-table">
+              <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Login IP</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${tBody}
+              </tbody>
+            </table>`;
+
+            $('#resultsTableSection').html(`<h5 style="color: rgb(211, 211, 211);">Found ${data.results.length} results:</h5><br>${resultTable}<br>
+            <span style="font-size: 13px; color: #999999;">Executed in ${data.execution_time} seconds</span>
+            <div style="margin-bottom: 50px;"></div>`);
+            $('#resultsTableSection').on('click', '.hint', function(){
+              $(this).addClass("active");
+            });
+          },
+        });
+      })
+    })
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+<nav>
+    <div id="main-nav" class="nav-wrapper">
+      <a href="/" class="brand-logo noselect"><img src="/img/logo.png"></a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down lato noselect">
+        <li><a href="/"><i class="fas fa-home" style="font-size: 13px;"></i> Home</a></li>
+        <% if(user) { %>
+          <li><a href="/search"><i class="fas fa-search" style="font-size: 13px;"></i> Search</a></li>
+          <li><a href="/account"><i class="far fa-address-card" style="font-size: 13px;"></i> Account</a></li>
+          <li><a href="/logout" style="margin-right: 20px;"><i class="fas fa-sign-out-alt" style="font-size: 13px;"></i> Logout</a></li>
+        <% } else { %>
+          <li style="margin-right: 20px;"><a href="/login"><i class="fas fa-sign-in-alt" style="font-size: 13px;"></i> Login</a></li>
+        <% } %>
+      </ul>
+      <ul class="right hide-on-large-only">
+        <li><a id="menuDropMobile" class="dropdown-trigger" href="#!" data-target="menuDropdown"><i class="material-icons">menu</i></a></li>
+      </ul>
+      <ul id='menuDropdown' class='dropdown-content' style="width: 100%;">
+        <li><a href="/">Home</a></li>
+        <% if(user) { %>
+          <li><a href="/search">Search</a></li>
+          <li><a href="/account">Account</a></li>
+          <li><a href="/logout" style="color: rgb(206, 75, 75);">Logout</a></li>
+        <% } else { %>
+          <li><a href="/login">Login</a></li>
+        <% } %>
+      </ul>
+    </div>
+</nav>

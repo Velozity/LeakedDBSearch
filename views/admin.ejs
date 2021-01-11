@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<!doctype html>
+<html lang="en">
+
+<head>
+  <%- include('./partial/head'); -%>
+</head>
+
+<body>
+
+  <header>
+    <%- include('./partial/header'); -%>
+  </header>
+
+  <div class="container fadeIn" style="margin-top: 10vh;">
+    <div class="row">
+      <div class="col l12 m12 s12">
+      <div class="dashCard" style="padding-bottom: 5px;">
+        <div class="dashHeader">
+          Statistics
+        </div>
+        <div class="dashContent" style="margin-bottom: 20px; margin-top: 20px;">
+          <span>Total Users: <b><%- users.length %></b></span><br>
+          <span>Total Paying Members: <b><%- users.filter((u) => u[5] === -1 ? true : moment.unix(u[5]).add(30, 'days').isSameOrAfter(moment.now())).length %></b></span><br>
+          <span>Total Paid: <b>$<%- transactions.map((t) => t[2]).reduce((a, b) => a + b, 0) %></b></span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col l12 m12 s12">
+        <div class="dashCard" style="padding-bottom: 5px;">
+          <div class="dashHeader">
+            Transactions
+          </div>
+          <div class="dashContent" style="margin-bottom: 20px; margin-top: 5px;">
+            <table class="highlight responsive-table">
+              <thead>
+                <th>Trans. ID</th>
+                <th>User</th>
+                <th>Amount</th>
+                <th>Date</th>
+              </thead>
+              <tbody>
+                <%- transactions.map((t) => `<tr>
+                  <th>${t[0]}</th>
+                  <th>${users.filter((u) => u[0] === t[1])[0][1]}</th>
+                  <th>$${t[2]} ${t[4]}</th>
+                  <th>${moment(t[6]).format('DD/MM/YYYY HH:ss')}</th>
+                </tr>`).join('')%>
+              </tbody>
+            </table> 
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+  </div>
+  <footer>
+    <%- include('./partial/footer'); -%>
+  </footer>
+  <script>
+   <% if (flashMsg.length > 0) { %>
+    M.toast({html: '<%=flashMsg[0] %>'})
+   <% } %>
+
+   
+  </script>
+</body>
+
+</html>

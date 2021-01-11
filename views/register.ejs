@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<!doctype html>
+<html lang="en">
+
+<head>
+  <%- include('./partial/head'); -%>
+</head>
+
+<body>
+
+  <header>
+    <%- include('./partial/header'); -%>
+  </header>
+
+  <div class="container center fadeIn" style="margin-top: 10vh;">
+    <h1 id="registerTitle">Create an account</h1>
+
+    <form id="registerForm" action="/register" method="post" class="center" style="margin-top: 5px;" enctype="application/x-www-form-urlencoded">
+      <a id="resendEmail" style="margin-top: 20px; font-weight: bold;" hidden>Resend Email Verification</a>
+      <div class="row" style="margin-bottom: 0px;"> 
+          <div class="input-field col l4 m12 s12 offset-l4"> 
+            <input type="text" name="username" required>
+            <label for="username">Username</label>
+          </div>
+        </div>
+        <div class="row" style="margin-bottom: 0px;"> 
+          <div class="input-field col l4 m12 s12 offset-l4"> 
+            <input type="text" name="email" required>
+            <label for="email">Email</label>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="input-field col l4 m12 s12 offset-l4 center"> 
+            <input type="password" name="password" required>
+            <label for="password">Password</label>
+          </div></div>
+
+      <button type="submit" class="btn-buy"><i class="fas fa-edit"></i> Register</button>
+      <div style="margin-top: 10px;">
+        <a class="createAccountText" href="/login" style="margin-top: 10px;">Already have an account?</a>
+      </div>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    </form> 
+    <div id="tokenForm" hidden>
+      <div class="row" style="margin-bottom: 0px;">
+      <div class="input-field col l4 m12 s12 offset-l4 center"> 
+      <input id="tokenInput" type="text" name="token" required>
+      <label for="pin">Pin</label>
+      </div>
+</div>
+      <button id="activateToken" class="btn-accept">Activate</button>
+  </div>
+</div> 
+
+  <footer>
+    <%- include('./partial/footer'); -%>
+  </footer>
+  <script>
+    <% if(registerStatus.length > 0) {%>
+      <% if(registerStatus[0].success) { %>
+        $('#registerForm').attr('hidden', true);
+        $('#tokenForm').attr('hidden', false);
+        $("#rtitle").html('Active your account');
+        M.toast({html: '<%=registerStatus[0].message %>'})
+        $('#registerTitle').html('Verify your email');
+
+        $('#activateToken').click(() => {
+          const token = $('#tokenInput').val();
+          $.ajax({
+            method: 'post',
+            url: `/auth/confirm`,
+            data: { 
+              token: token,
+              _csrf: "<%= csrfToken %>"
+            },
+            success: (data) => {
+              console.log(data)
+              if(!data.error) {
+                document.location = '/login';
+              } else {
+                M.toast({html: 'Invalid pin'})
+              }
+            },
+            dataType: 'json'
+          });
+        });
+      <% } else { %> 
+        M.toast({html: '<%=registerStatus[0].message %>'})
+      <% } %>
+    <% } %>
+  </script>
+</body>
+
+</html>

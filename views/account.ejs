@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<!doctype html>
+<html lang="en">
+
+<head>
+  <%- include('./partial/head'); -%>
+</head>
+
+<body>
+
+  <header>
+    <%- include('./partial/header'); -%>
+  </header>
+
+  <div class="container fadeIn" style="margin-top: 10vh;">
+
+    <div class="row" style="margin-bottom: 5px;">
+      <div class="col l6 m12 s12">
+        <div class="dashCard" style="padding-bottom: 5px;">
+          <div class="dashHeader">
+            <%= user.username %>'s Account 
+          </div>
+          <div class="dashContent" style="<%- !user.isMember ? 'margin-bottom: 64px;' : 'margin-bottom: 20px;' %> margin-top: 20px;">
+              Email: <span style="color: rgb(184, 184, 184);"><%= user.email %></span><br>
+            <form id="deleteAccount" action="/auth/deleteAccount" method="POST" enctype="application/x-www-form-urlencoded">
+              <button type="submit" class="btn-cancel noselect" style="margin-top: 10px;"><i class="far fa-trash-alt"></i> Close Account</button>
+              <a href="/forgot" class="btn-amber noselect" style="margin-top: 10px;"><i class="fas fa-key"></i> Change Password</a>
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            </form>  
+        </div>
+      </div>
+    </div>
+    <div class="col l6 m12 s12">
+      <div class="dashCard" style="padding-bottom: 5px;">
+        <div class="dashHeader">
+          Membership 
+        </div>
+        <div class="center dashContent" style="<%- user.isMember ? 'margin-bottom: 29px; margin-top: 29px;' : 'margin-bottom: 20px; margin-top: 20px;' %>">
+          <% if(user.isMember) { %>
+            <span style="color: rgb(240, 147, 72);">You're a member!</span><br>
+            <span style="font-weight: bold;"><%- daysLeftMembership === 'Infinite' ? 'Lifetime' : `${daysLeftMembership} days remaining` %> </span>
+          <% } else { %>
+          <span>You are not a member, you can purchase 30 days for <b>$5 USD.</b></span>
+          <form id="membershipForm" action="/payment/purchase" class="center" enctype="application/x-www-form-urlencoded">
+            <br>
+            <img id="loadingBTC" src="/img/loading-purple.svg" style="width: 26px;" hidden>
+            <a id="buyMembershipBTC" href="/payment/createinvoice" class="btn-purple noselect" style="margin-top: 0px; width: 300px;">Buy Membership with BTC/ETH</a><br>
+            <img id="loading" src="/img/loading-green.svg" style="width: 26px; margin-top: 14px;" hidden>
+            <button id="buyMembership" type="submit" class="btn-buy noselect" style="margin-top: 10px; width: 237px;">Buy Membership with PayPal</button>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          </form>  
+          <% } %>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="row">
+      <div class="col l12 m12 s12">
+      <div class="dashCard" style="padding-bottom: 5px;">
+        <div class="dashHeader">
+          Transaction History 
+        </div>
+        <div class="center dashContent" style="margin-bottom: 20px; margin-top: 20px;">
+          <% if(userTransactions.length > 0) { %>
+            <table class="highlight responsive-table">
+              <thead>
+                <tr>
+                  <th>Transaction ID</th>
+                  <th>Paid</th>
+                  <th>Description</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%- userTransactions.map((t) => `<tr>
+                  <th>${t[0]}</th>
+                  <th>$${t[2]} ${t[4]}</th>
+                  <th>${t[3]}</th>
+                  <th>${moment(t[6]).format('DD/MM/YYYY HH:ss (UTCZ)')}</th>
+                </tr>`).join(''); %>
+              </tbody>
+            </table>
+          <% } else { %>
+          <span style="color: rgb(197, 194, 194);">Your transaction history will show here.</span> 
+          <% } %>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <footer>
+    <%- include('./partial/footer'); -%>
+  </footer>
+  <script>
+   <% if (purchaseStatus.length > 0) { %>
+    M.toast({html: '<%=purchaseStatus[0] %>'})
+   <% } %>
+
+   $('#buyMembership').click(() => {
+     $('#loading').attr('hidden', false);
+     $('#buyMembership').attr('hidden', true);
+   });
+
+   $('#buyMembershipBTC').click(() => {
+     $('#loadingBTC').attr('hidden', false);
+     $('#buyMembershipBTC').attr('hidden', true);
+   })
+
+   $('#deleteAccount').submit((e) => {
+      if(confirm("If you delete your account, you won't be able to re-use the same email or username. Are you sure?")){
+          
+      }
+      else{
+        e.preventDefault();
+      }
+   })
+  </script>
+</body>
+
+</html>
